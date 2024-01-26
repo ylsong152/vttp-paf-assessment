@@ -4,12 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.json.Json;
+import jakarta.json.JsonNumber;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 
@@ -26,13 +26,14 @@ public class ForexService {
 		try (InputStream is = new ByteArrayInputStream(response.getBody().getBytes())) {
 			JsonReader reader = Json.createReader(is);
 			JsonObject data = reader.readObject();
-			
+			String SGD = data.getJsonNumber("rates.SGD").toString();
+			float sgdRate = Float.parseFloat(SGD);
+			float price = amount * sgdRate;
+			return price;
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			return -1000f;
 		}
-
-
-		return -1000f;
 	}
 }
