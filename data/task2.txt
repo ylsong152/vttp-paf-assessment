@@ -1,0 +1,51 @@
+Write your Task 2 answers in this file
+
+TASK 2.1:
+mongoimport --db=bedandbreakfast --collection=listings_and_reviews --file=listings.json
+
+TASK 2.2:
+db.listings_and_reviews.aggregate([
+    {$match: {"address.country": /^australia$/i}},
+    {$out: "listings"}
+])
+
+TASK 2.3:
+db.listings.aggregate([
+    {$unwind: "$reviews"},
+    {$project: 
+           {_id: 0,
+            _id: "$reviews._id",
+            date: "$reviews.date",
+            listing_id: "$reviews.listing_id",
+            reviewer_name: {$replaceAll: {input: "$reviews.reviewer_name", find: ",", replacement: ""}},            
+            comments: {$replaceAll: {input: "$reviews.comments", find: "\n" || "r", replacement: ""}},
+           }
+    },
+    {$out: "reviews"}
+])
+
+TASK 2.4:
+db.listings.update({}, {$unset: {reviews:1}} , {multi: true})
+
+TASK 2.5:
+mongoexport --db=bedandbreakfast --collection=reviews --type=csv --fields=date,listing_id,reviewer_name,comments --out=reviews.csv
+
+TASK 2.6:
+Reading reviews.csv
+Parsing CSV file
+Exception in thread "main" java.lang.IllegalArgumentException: 3 > 1
+        at java.base/java.util.Arrays.copyOfRange(Arrays.java:3808)
+        at java.base/java.util.Arrays.copyOfRange(Arrays.java:3768)
+        at vttp2023.paf.assessment.App.lambda$main$2(App.java:39)
+        at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+        at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+        at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+        at java.base/java.util.stream.SliceOps$1$1.accept(SliceOps.java:200)
+        at java.base/java.util.Iterator.forEachRemaining(Iterator.java:133)
+        at java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+        at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+        at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+        at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+        at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+        at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
+        at vttp2023.paf.assessment.App.main(App.java:57)
