@@ -1,23 +1,13 @@
 package vttp2023.batch4.paf.assessment.repositories;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import org.bson.BsonDocument;
 import org.bson.Document;
-import org.bson.json.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.GroupOperation;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -85,7 +75,8 @@ public class ListingsRepository {
 									.and("min_nights").lte(duration);
 		Query query = new Query(criteria);
 		query.fields().include("_id").include("name").include("accommodates").include("price");
-		BsonDocument doc = new BsonDocument();
+		// Document doc = new Document();
+		// doc.get("price", Number.class).floatValue();
 
 		List<AccommodationSummary> accommsList = template.find(query, AccommodationSummary.class);
 
